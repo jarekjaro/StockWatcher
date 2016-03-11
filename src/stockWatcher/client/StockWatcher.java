@@ -5,11 +5,11 @@ import com.google.gwt.core.client.GWT;
 import com.google.gwt.event.dom.client.*;
 import com.google.gwt.i18n.client.DateTimeFormat;
 import com.google.gwt.i18n.client.NumberFormat;
-import com.google.gwt.user.client.Random;
 import com.google.gwt.user.client.Timer;
 import com.google.gwt.user.client.Window;
 import com.google.gwt.user.client.rpc.AsyncCallback;
 import com.google.gwt.user.client.ui.*;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -21,21 +21,25 @@ public class StockWatcher implements EntryPoint {
     private FlexTable stocksFlexTable = new FlexTable();
     private HorizontalPanel addPanel = new HorizontalPanel();
     private TextBox newSymbolTextBox = new TextBox();
-    private Button addStockButton = new Button("Add");
+    private Button addStockButton;
     private Label lastUpdatedLabel = new Label();
     private ArrayList<String> stocks = new ArrayList<>();
     private StockPriceServiceAsync stockPriceSvc = GWT.create(StockPriceService.class);
     private Label errorMsgLabel = new Label();
+    private StockWatcherConstants constants = GWT.create(StockWatcherConstants.class);
+    private StockWatcherMessages messages = GWT.create(StockWatcherMessages.class);
 
     /**
      * Entry point method.
      */
     public void onModuleLoad() {
+        addStockButton = new Button(constants.add());
+
         // Create table for stock data.
-        stocksFlexTable.setText(0, 0, "Symbol");
-        stocksFlexTable.setText(0, 1, "Price");
-        stocksFlexTable.setText(0, 2, "Change");
-        stocksFlexTable.setText(0, 3, "Remove");
+        stocksFlexTable.setText(0, 0, constants.symbol());
+        stocksFlexTable.setText(0, 1, constants.price());
+        stocksFlexTable.setText(0, 2, constants.change());
+        stocksFlexTable.setText(0, 3, constants.remove());
 
         // Add styles to elements in the stock list table.
         stocksFlexTable.setCellPadding(6);
@@ -98,7 +102,7 @@ public class StockWatcher implements EntryPoint {
         final String symbol = newSymbolTextBox.getText().toUpperCase().trim();
         newSymbolTextBox.setFocus(true);
         if (!symbol.matches("^[0-9A-Z\\.]{1,10}$")) {
-            Window.alert("'" + symbol + "' is not a valid symbol.");
+            Window.alert(messages.invalidSymbol(symbol));
             newSymbolTextBox.selectAll();
             return;
         }
@@ -170,8 +174,7 @@ public class StockWatcher implements EntryPoint {
         // Display timestamp showing last refresh.
         DateTimeFormat dateFormat = DateTimeFormat.getFormat(
                 DateTimeFormat.PredefinedFormat.DATE_TIME_MEDIUM);
-        lastUpdatedLabel.setText("Last update : "
-                + dateFormat.format(new Date()));
+        lastUpdatedLabel.setText(messages.lastUpdate(new Date()));
 
         //Clear any errors.
         errorMsgLabel.setVisible(false);

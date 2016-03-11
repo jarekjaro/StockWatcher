@@ -13,6 +13,7 @@
 
     <!-- Specify the app entry point class.                   -->
     <entry-point class='stockWatcher.client.StockWatcher'/>
+    <extend-property name="locale" values="de"/>
 
     <!-- Specify the app servlets.                   -->
     <servlet path='/StockWatcherService' class='stockWatcher.server.StockWatcherServiceImpl'/>
